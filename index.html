@@ -1,70 +1,150 @@
-<!DOCTYPE html>                                                                                                              │
-│    2     <html lang="en">                                                                                                         │
-│    3     <head>                                                                                                                   │
-│    4         <meta charset="UTF-8">                                                                                               │
-│    5         <meta name="viewport" content="width=device-width, initial-scale=1.0">                                               │
-│    6         <title>Immunefi PoC - Subdomain Takeover on docs.lido.fi</title>                                                     │
-│    7         <style>                                                                                                              │
-│    8             body {                                                                                                           │
-│    9                 font-family: 'Arial', sans-serif;                                                                            │
-│   10                 background-color: #f0f2f5;                                                                                   │
-│   11                 color: #333;                                                                                                 │
-│   12                 margin: 0;                                                                                                   │
-│   13                 padding: 20px;                                                                                               │
-│   14                 display: flex;                                                                                               │
-│   15                 justify-content: center;                                                                                     │
-│   16                 align-items: center;                                                                                         │
-│   17                 min-height: 100vh;                                                                                           │
-│   18                 box-sizing: border-box;                                                                                      │
-│   19             }                                                                                                                │
-│   20             .container {                                                                                                     │
-│   21                 background-color: #fff;                                                                                      │
-│   22                 padding: 40px;                                                                                               │
-│   23                 border-radius: 8px;                                                                                          │
-│   24                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);                                                                   │
-│   25                 max-width: 800px;                                                                                            │
-│   26                 text-align: center;                                                                                          │
-│   27             }                                                                                                                │
-│   28             h1 {                                                                                                             │
-│   29                 color: #d9534f; /* A red color, indicating a warning/vulnerability */                                        │
-│   30                 margin-bottom: 20px;                                                                                         │
-│   31                 font-size: 2.2em;                                                                                            │
-│   32             }                                                                                                                │
-│   33             p {                                                                                                              │
-│   34                 line-height: 1.6;                                                                                            │
-│   35                 margin-bottom: 15px;                                                                                         │
-│   36                 font-size: 1.1em;                                                                                            │
-│   37             }                                                                                                                │
-│   38             strong {                                                                                                         │
-│   39                 color: #5cb85c; /* A green color for emphasis */                                                             │
-│   40             }                                                                                                                │
-│   41             .note {                                                                                                          │
-│   42                 font-size: 0.9em;                                                                                            │
-│   43                 color: #777;                                                                                                 │
-│   44                 margin-top: 30px;                                                                                            │
-│   45             }                                                                                                                │
-│   46             .warning {                                                                                                       │
-│   47                 color: #f0ad4e; /* Orange for warning */                                                                     │
-│   48                 font-weight: bold;                                                                                           │
-│   49             }                                                                                                                │
-│   50         </style>                                                                                                             │
-│   51     </head>                                                                                                                  │
-│   52     <body>                                                                                                                   │
-│   53         <div class="container">                                                                                              │
-│   54             <h1>Subdomain Takeover Proof of Concept</h1>                                                                     │
-│   55             <p>This page demonstrates a **dangling CNAME vulnerability** on <strong><code>docs.lido.fi</code></strong>.</p>  │
-│   56             <p>The CNAME record for <code>docs.lido.fi</code> points to <strong><code>lidofinance.github.io</code></strong>, │
-│      which was an unclaimed GitHub Pages repository.</p>                                                                          │
-│   57             <p>This GitHub Pages repository (<code>lidofinance.github.io</code>) has been temporarily claimed for this       │
-│      **Proof of Concept (PoC)** to illustrate the vulnerability.</p>                                                              │
-│   58             <p><strong>Immunefi Report ID:</strong> 54182</p>                                                                │
-│   59             <p><strong>Reported by:</strong> @N4pol3on</p>                                                                   │
-│   60             <p class="warning">**IMPORTANT:** This content is **benign** and will be **immediately removed** after           │
-│      verification by the Immunefi team to restore the original state.</p>                                                         │
-│   61             <p class="note">This PoC demonstrates the ability for an attacker to serve arbitrary content under               │
-│      <code>docs.lido.fi</code>, enabling phishing, malware distribution, or defacement. Please refer to the full Immunefi report  │
-│      for detailed impact analysis.</p>                                                                                            │
-│   62         </div>                                                                                                               │
-│   63     </body>                                                                                                                  │
-│   64     </html>                                                                                                                  │
-│                                                                                                                           
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immunefi PoC - Subdomain Takeover on docs.lido.fi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --lido-blue: #00a3ff;
+            --lido-dark-blue: #0b1f3a;
+            --lido-bg: #081426;
+            --text-primary: #ffffff;
+            --text-secondary: #a0b3d1;
+            --card-bg: rgba(13, 30, 55, 0.7);
+            --border-color: rgba(0, 163, 255, 0.2);
+            --warning-yellow: #f0ad4e;
+            --success-green: #5cb85c;
+            --danger-red: #d9534f;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--lido-bg);
+            background-image: linear-gradient(135deg, var(--lido-bg) 0%, #1a1a2e 100%);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            max-width: 800px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .lido-logo {
+            width: 40px;
+            height: 40px;
+        }
+
+        h1 {
+            color: var(--danger-red);
+            margin: 0;
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: var(--text-secondary);
+        }
+        
+        p strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        code {
+            background-color: rgba(0,0,0,0.3);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--lido-blue);
+        }
+
+        .report-info {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .report-info p {
+            font-size: 1.1em;
+            color: var(--text-primary);
+        }
+
+        .report-info strong {
+            color: var(--success-green);
+        }
+
+        .warning {
+            background-color: rgba(240, 173, 78, 0.1);
+            border: 1px solid var(--warning-yellow);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .warning p {
+            color: var(--warning-yellow);
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-top: 30px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <svg class="lido-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 48C37.2548 48 48 37.2548 48 24C48 10.7452 37.2548 0 24 0C10.7452 0 0 10.7452 0 24C0 37.2548 10.7452 48 24 48Z" fill="url(#paint0_linear)"></path><path d="M24.0002 31.2L16.8002 26.4V16.8L24.0002 21.6L31.2002 16.8V26.4L24.0002 31.2Z" fill="white"></path><defs><linearGradient id="paint0_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#00A3FF"></stop><stop offset="1" stop-color="#007BFF"></stop></linearGradient></defs></svg>
+            <h1>Subdomain Takeover PoC</h1>
+        </div>
+
+        <p>This page demonstrates a <strong>dangling CNAME vulnerability</strong> on <code>docs.lido.fi</code>.</p>
+        <p>The CNAME record for <code>docs.lido.fi</code> points to <code>lidofinance.github.io</code>, which was an unclaimed GitHub Pages repository.</p>
+        <p>This GitHub Pages repository has been temporarily claimed for this <strong>Proof of Concept (PoC)</strong> to illustrate the vulnerability.</p>
+        
+        <div class="report-info">
+            <p><strong>Immunefi Report ID:</strong> 54182</p>
+            <p><strong>Reported by:</strong> @N4pol3on</p>
+        </div>
+
+        <div class="warning">
+            <p><strong>IMPORTANT:</strong> This content is <strong>benign</strong> and will be <strong>immediately removed</strong> after verification by the Immunefi team to restore the original state.</p>
+        </div>
+
+        <p class="note">This PoC demonstrates the ability for an attacker to serve arbitrary content under <code>docs.lido.fi</code>, enabling phishing, malware distribution, or defacement. Please refer to the full Immunefi report for detailed impact analysis.</p>
+    </div>
+</body>
+</html>
